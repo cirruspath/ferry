@@ -55,7 +55,7 @@ def _supported_arch():
 
 def _supported_lxc():
     output = Popen("(lxc-version 2>/dev/null || lxc-start --version) | sed 's/.* //'", stdout=PIPE, shell=True).stdout.read()
-    ver = tuple(map(int, (output.strip().split("."))))
+    ver = tuple(map(int, (output.strip().split(".")[:3])))
     return ver > (0, 7, 5)
 
 def _supported_python():
@@ -238,7 +238,7 @@ class Installer(object):
                 self._change_permission(DEFAULT_MONGO_LOG)
         except OSError as e:
             logging.error("Could not start ferry servers.\n") 
-            logging.error(e.explanation)
+            logging.error(e.strerror)
             sys.exit(1)
 
         # Check if the Mongo image is built.
